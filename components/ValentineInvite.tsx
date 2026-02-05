@@ -13,15 +13,54 @@ const ValentineInvite: React.FC<Props> = ({ recipient, sender, onAccept }) => {
   const [yesScale, setYesScale] = useState(1);
   const [flash, setFlash] = useState(false);
   const noButtonRef = useRef<HTMLButtonElement>(null);
+  const yesButtonRef = useRef<HTMLButtonElement>(null);
 
   const moveNoButton = useCallback(() => {
-    // Increment YES button size every time NO button moves
-    setYesScale(prev => Math.min(prev + 0.18, 3.5)); // Max scale slightly increased
+    // Increase YES button size every time NO button moves
+    setYesScale(prev => Math.min(prev + 0.18, 3.5));
 
-    // Randomize NO position within a safe viewport range
-    const x = (Math.random() * 60 + 20); // 20% to 80%
-    const y = (Math.random() * 60 + 20); // 20% to 80%
-    setNoPosition({ x, y });
+    if (!yesButtonRef.current) return;
+
+    // Get the current bounds of the YES button to avoid it
+    const yesRect = yesButtonRef.current.getBoundingClientRect();
+    const padding = 20; // Extra clearance
+
+    let newX = 0;
+    let newY = 0;
+    let attempts = 0;
+    const maxAttempts = 50;
+
+    // Generate coordinates and check for overlap with YES button
+    while (attempts < maxAttempts) {
+      // Use viewport percentages for position
+      const xPercent = Math.random() * 80 + 10; // 10% to 90%
+      const yPercent = Math.random() * 80 + 10; // 10% to 90%
+      
+      const xPx = (xPercent / 100) * window.innerWidth;
+      const yPx = (yPercent / 100) * window.innerHeight;
+
+      // Approximate No button size (120x60)
+      const noWidth = 120;
+      const noHeight = 60;
+
+      const overlapX = xPx < yesRect.right + padding && xPx + noWidth > yesRect.left - padding;
+      const overlapY = yPx < yesRect.bottom + padding && yPx + noHeight > yesRect.top - padding;
+
+      if (!overlapX || !overlapY) {
+        newX = xPercent;
+        newY = yPercent;
+        break;
+      }
+      attempts++;
+    }
+
+    // Fallback if loop fails (unlikely)
+    if (newX === 0) {
+        newX = Math.random() > 0.5 ? 5 : 95;
+        newY = Math.random() > 0.5 ? 5 : 95;
+    }
+
+    setNoPosition({ x: newX, y: newY });
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -94,6 +133,7 @@ const ValentineInvite: React.FC<Props> = ({ recipient, sender, onAccept }) => {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-12 relative min-h-[250px] w-full">
           <button
+            ref={yesButtonRef}
             onClick={handleYes}
             style={{ transform: `scale(${yesScale})` }}
             className={`px-16 py-6 bg-rose-500 hover:bg-rose-600 text-white text-3xl font-black rounded-full shadow-[0_20px_50px_rgba(244,63,94,0.5)] transition-all duration-300 z-20 uppercase tracking-widest active:scale-95 flex items-center gap-3 ${yesScale === 1 ? 'animate-pulse-scale' : ''}`}
@@ -132,7 +172,7 @@ const ValentineInvite: React.FC<Props> = ({ recipient, sender, onAccept }) => {
       </div>
 
       <a 
-        href="https://www.instagram.com/bas.kar.karan_" 
+        href="https://www.instagram.com/bas.kar.karan" 
         target="_blank" 
         rel="noopener noreferrer"
         className="mt-16 group flex flex-col items-center gap-2 transition-all hover:scale-110 pointer-events-auto"

@@ -78,7 +78,7 @@ const Celebration: React.FC<Props> = ({ recipient, sender }) => {
       </div>
 
       <a 
-        href="https://www.instagram.com/bas.kar.karan_" 
+        href="https://www.instagram.com/bas.kar.karan" 
         target="_blank" 
         rel="noopener noreferrer"
         className="mt-12 group flex flex-col items-center gap-2 transition-all hover:scale-110"
