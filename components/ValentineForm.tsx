@@ -1,13 +1,13 @@
-
-import React, { useState } from 'react';
-import { generateInviteUrl } from '../utils/url';
-import { Heart, Copy, Check } from 'lucide-react';
+import React, { useState, useRef } from "react";
+import { generateInviteUrl } from "../utils/url";
+import { Heart, Copy, Check } from "lucide-react";
 
 const ValentineForm: React.FC = () => {
-  const [recipient, setRecipient] = useState('');
-  const [sender, setSender] = useState('');
-  const [generatedLink, setGeneratedLink] = useState('');
+  const [recipient, setRecipient] = useState("");
+  const [sender, setSender] = useState("");
+  const [generatedLink, setGeneratedLink] = useState("");
   const [copied, setCopied] = useState(false);
+  const linkInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,9 +17,31 @@ const ValentineForm: React.FC = () => {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    const urlToCopy = linkInputRef.current?.value || generatedLink;
+
+    // Create a temporary textarea for the most reliable cross-browser copy
+    const textArea = document.createElement("textarea");
+    textArea.value = urlToCopy;
+
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    textArea.style.opacity = "0";
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      document.execCommand("copy");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
+
+    document.body.removeChild(textArea);
   };
 
   return (
@@ -27,7 +49,7 @@ const ValentineForm: React.FC = () => {
       <div className="flex justify-center mb-6">
         <Heart className="w-16 h-16 text-rose-500 fill-rose-500 animate-pulse" />
       </div>
-      
+
       <h2 className="text-3xl font-cursive text-rose-600 text-center mb-6">
         Create Your Valentine Surprise
       </h2>
@@ -35,7 +57,9 @@ const ValentineForm: React.FC = () => {
       {!generatedLink ? (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-rose-400 mb-1 ml-1">Her Name (The One You Love)</label>
+            <label className="block text-sm font-semibold text-rose-400 mb-1 ml-1">
+              Her Name (The One You Love)
+            </label>
             <input
               type="text"
               required
@@ -46,7 +70,9 @@ const ValentineForm: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-rose-400 mb-1 ml-1">His Name (Yours)</label>
+            <label className="block text-sm font-semibold text-rose-400 mb-1 ml-1">
+              His Name (Yours)
+            </label>
             <input
               type="text"
               required
@@ -70,6 +96,7 @@ const ValentineForm: React.FC = () => {
           </p>
           <div className="flex items-center gap-2 p-3 bg-rose-50 rounded-xl border border-rose-100 overflow-hidden">
             <input
+              ref={linkInputRef}
               type="text"
               readOnly
               value={generatedLink}
@@ -79,11 +106,15 @@ const ValentineForm: React.FC = () => {
               onClick={copyToClipboard}
               className="p-2 bg-white rounded-lg shadow-sm hover:text-rose-500 transition-colors"
             >
-              {copied ? <Check className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
+              {copied ? (
+                <Check className="w-5 h-5 text-green-500" />
+              ) : (
+                <Copy className="w-5 h-5" />
+              )}
             </button>
           </div>
           <button
-            onClick={() => setGeneratedLink('')}
+            onClick={() => setGeneratedLink("")}
             className="w-full text-rose-400 text-sm font-semibold hover:text-rose-600 transition-colors"
           >
             Create Another
