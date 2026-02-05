@@ -86,7 +86,7 @@ const Celebration: React.FC<Props> = ({ recipient, sender }) => {
         <div className="p-4 bg-white/80 rounded-full shadow-lg border border-rose-100 group-hover:bg-rose-500 group-hover:text-white transition-colors">
           <Instagram className="w-8 h-8" />
         </div>
-        <span className="text-rose-400 font-bold text-xs tracking-widest uppercase opacity-60 group-hover:opacity-100">Created by Karan</span>
+        <span className="text-rose-400 font-bold text-xs tracking-widest uppercase opacity-60 group-hover:opacity-100">Created by Bas Kar Karan</span>
       </a>
     </div>
   );

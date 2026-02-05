@@ -128,7 +128,7 @@ const ValentineInvite: React.FC<Props> = ({ recipient, sender, onAccept }) => {
           Dearest {recipient},
         </h1>
         <h2 className="text-3xl md:text-5xl font-cursive text-rose-500 mb-16 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
-          Will you be my Valentine forever?
+          Will you be my Valentine?
         </h2>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-12 relative min-h-[250px] w-full">
