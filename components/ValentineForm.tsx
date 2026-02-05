@@ -16,9 +16,51 @@ const ValentineForm: React.FC = () => {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    // Robust fallback for copy-to-clipboard
+    const textArea = document.createElement("textarea");
+    textArea.value = generatedLink;
+    
+    // Ensure textarea is not visible or interfering with layout
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+    textArea.style.top = "0";
+    textArea.setAttribute("readonly", ""); // Prevent mobile keyboard from popping up
+    
+    document.body.appendChild(textArea);
+    
+    // Select the text
+    const isiOS = navigator.userAgent.match(/ipad|iphone/i);
+    if (isiOS) {
+      const range = document.createRange();
+      range.selectNodeContents(textArea);
+      const selection = window.getSelection();
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      textArea.setSelectionRange(0, 999999);
+    } else {
+      textArea.select();
+    }
+    
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    } catch (err) {
+      console.error('Fallback: Oops, unable to copy', err);
+      // Last resort fallback
+      try {
+        navigator.clipboard.writeText(generatedLink).then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        });
+      } catch (e) {}
+    }
+    
+    document.body.removeChild(textArea);
   };
 
   return (

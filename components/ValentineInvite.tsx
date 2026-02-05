@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import confetti from 'canvas-confetti';
+import { Instagram } from 'lucide-react';
 
 interface Props {
   recipient: string;
@@ -77,7 +78,7 @@ const ValentineInvite: React.FC<Props> = ({ recipient, sender, onAccept }) => {
         <div className="fixed inset-0 z-50 bg-white animate-pulse" />
       )}
 
-      <div className="z-10 text-center max-w-4xl px-4 flex flex-col items-center">
+      <div className="z-10 text-center max-w-4xl px-4 flex flex-col items-center mb-12">
         <div className="mb-8 animate-float">
             <svg className="w-24 h-24 text-rose-500 fill-rose-100 drop-shadow-md" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
@@ -125,10 +126,22 @@ const ValentineInvite: React.FC<Props> = ({ recipient, sender, onAccept }) => {
         </div>
       </div>
 
-      <div className="mt-20 opacity-40 pointer-events-none text-center">
-        <p className="text-rose-400 font-cursive text-2xl animate-bounce">Waiting for your answer... ❤️</p>
-        {sender && <p className="text-rose-300 text-sm mt-2">Love, {sender}</p>}
+      <div className="mt-12 opacity-80 pointer-events-none text-center">
+        <p className="text-rose-500 font-cursive text-4xl md:text-5xl animate-bounce">Waiting for your answer... ❤️</p>
+        {sender && <p className="text-rose-600 text-xl font-bold mt-4 tracking-wide">Love, {sender}</p>}
       </div>
+
+      <a 
+        href="https://www.instagram.com/bas.kar.karan_" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="mt-16 group flex flex-col items-center gap-2 transition-all hover:scale-110 pointer-events-auto"
+      >
+        <div className="p-4 bg-white/80 rounded-full shadow-lg border border-rose-100 group-hover:bg-rose-500 group-hover:text-white transition-colors">
+          <Instagram className="w-8 h-8" />
+        </div>
+        <span className="text-rose-400 font-bold text-xs tracking-widest uppercase opacity-60 group-hover:opacity-100">Created by Bas Kar Karan</span>
+      </a>
     </div>
   );
 };
